@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>SRBIJA POBEĐUJE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --white:#ffffff;
+  }
+
+  *{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
+
+  html,body{
+    width:100%;
+    height:100%;
+    background:var(--white);
+    color:var(--black);
+    overflow:hidden;
+  }
+
+  body{
+    font-family:"IBM Plex Mono", monospace;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* entry fade */
+  body{
+    opacity:0;
+    animation:enter 1.4s ease forwards;
+  }
+  @keyframes enter{
+    to{opacity:1;}
+  }
+
+  .page{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:8vw;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity 0.7s ease;
+  }
+  .page.active{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+
+  /* ---- HOME ---- */
+  .headline{
+    text-align:center;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+    line-height:1.08;
+    font-size:clamp(2rem, 6.2vw, 5rem);
+    max-width:16ch;
+  }
+
+  /* ---- shared rounded text buttons ---- */
+  .btn{
+    background:transparent;
+    color:var(--black);
+    border:1px solid var(--black);
+    border-radius:999px;
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:400;
+    font-size:0.85rem;
+    padding:0.85em 2em;
+    cursor:pointer;
+    transition:background 0.25s ease, opacity 0.25s ease;
+  }
+  .btn:hover{
+    background:rgba(10,10,10,0.06);
+  }
+
+  .contact-btn{
+    margin-top:6vh;
+  }
+
+  /* ---- CONTACT ---- */
+  .back-btn{
+    position:absolute;
+    top:6vh;
+    left:6vw;
+    background:none;
+    border:none;
+    font-size:1.4rem;
+    line-height:1;
+    cursor:pointer;
+    color:#9a9a9a;
+    padding:0.3em;
+    font-family:"IBM Plex Mono", monospace;
+  }
+
+  .contact-wrap{
+    width:100%;
+    max-width:420px;
+  }
+
+  .contact-title{
+    font-weight:400;
+    font-size:clamp(1.3rem, 3.4vw, 1.8rem);
+    text-align:center;
+    margin-bottom:6vh;
+  }
+
+  form{
+    display:flex;
+    flex-direction:column;
+    gap:2.4em;
+  }
+
+  .field{
+    position:relative;
+  }
+
+  .field input{
+    width:100%;
+    border:none;
+    background:transparent;
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:400;
+    font-size:0.95rem;
+    padding:0.6em 0.1em;
+    color:var(--black);
+    outline:none;
+  }
+
+  .field input::placeholder{
+    color:#9a9a9a;
+    font-weight:400;
+    font-size:0.85rem;
+  }
+
+  .send-btn{
+    margin-top:2vh;
+    align-self:center;
+  }
+
+  .confirm{
+    text-align:center;
+    font-weight:400;
+    font-size:0.85rem;
+    margin-top:1.6em;
+    opacity:0;
+    transition:opacity 0.4s ease;
+  }
+  .confirm.show{
+    opacity:1;
+  }
+
+  footer{
+    position:fixed;
+    bottom:4vh;
+    left:0;
+    width:100%;
+    text-align:center;
+    font-size:0.75rem;
+    font-weight:400;
+    color:#9a9a9a;
+    z-index:2;
+  }
+
+  @media (max-width:480px){
+    .headline{
+      max-width:14ch;
+    }
+    form{
+      gap:2em;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div id="home" class="page active">
+    <h1 class="headline">NEĆETE PUMPATI!<br>SRBIJA POBEĐUJE 🇷🇸🇷🇸🇷🇸</h1>
+    <button class="btn contact-btn" id="toContact">KONTAKTIRAJTE ME</button>
+  </div>
+
+  <div id="contact" class="page">
+    <button class="back-btn" id="toHome" aria-label="Nazad">←</button>
+    <div class="contact-wrap">
+      <form id="contactForm">
+        <div class="field">
+          <input type="text" name="firstName" placeholder="Ime" required>
+        </div>
+        <div class="field">
+          <input type="text" name="lastName" placeholder="Prezime" required>
+        </div>
+        <div class="field">
+          <input type="email" name="email" placeholder="Email adresa" required>
+        </div>
+        <button type="submit" class="btn send-btn">POŠALJI</button>
+        <p class="confirm" id="confirmMsg">Poruka poslata</p>
+      </form>
+    </div>
+  </div>
+
+  <footer>Napravljen uz ❤️ iz Subotice</footer>
+
+  <audio id="anthem" src="anthem.mp3" loop preload="auto"></audio>
+
+  <script>
+    var home = document.getElementById('home');
+    var contact = document.getElementById('contact');
+    var toContact = document.getElementById('toContact');
+    var toHome = document.getElementById('toHome');
+    var form = document.getElementById('contactForm');
+    var confirmMsg = document.getElementById('confirmMsg');
+    var anthem = document.getElementById('anthem');
+
+    function switchPage(fromEl, toEl){
+      fromEl.classList.remove('active');
+      setTimeout(function(){
+        toEl.classList.add('active');
+      }, 700);
+    }
+
+    toContact.addEventListener('click', function(){
+      switchPage(home, contact);
+    });
+
+    toHome.addEventListener('click', function(){
+      switchPage(contact, home);
+    });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(form);
+      var first = data.get('firstName');
+      var last = data.get('lastName');
+      var email = data.get('email');
+
+      var subject = encodeURIComponent('Poruka od ' + first + ' ' + last);
+      var body = encodeURIComponent('Ime: ' + first + ' ' + last + '\nEmail: ' + email);
+      window.location.href = 'mailto:lebromoficial@gmail.com?subject=' + subject + '&body=' + body;
+
+      confirmMsg.classList.add('show');
+    });
+
+    /* anthem: autoplay on load, loop forever, no pause control anywhere */
+    function startAnthem(){
+      anthem.play().catch(function(){
+        /* autoplay blocked until a gesture happens */
+      });
+    }
+    window.addEventListener('load', startAnthem);
+    document.addEventListener('click', function once(){
+      startAnthem();
+      document.removeEventListener('click', once);
+    });
+  </script>
+
+</body>
+</html>
