@@ -347,6 +347,12 @@
   .explorer-icon.selected .thumb-wrap{
     outline:1px dashed #2563eb;
   }
+
+  @media (max-width:700px){
+    .explorer-icon .vid-label{
+      font-size:0.85rem;
+    }
+  }
  
   /* ================= VIDEO PLAYER WINDOW (uses the real player.png chrome image) ================= */
   #player-overlay{
@@ -432,7 +438,7 @@
   </div>
  
   <div id="contact" class="page">
-    <button class="back-btn" id="toHome" aria-label="Nazad">←</button>
+    <button class="back-btn" id="toHome" aria-label="">←</button>
     <div class="contact-wrap">
       <form id="contactForm">
         <div class="field">
@@ -452,7 +458,7 @@
  
   <!-- ================= blank desktop page with the folder icon ================= -->
   <div id="folder" class="page">
-    <button class="back-btn" id="folderBack" aria-label="Nazad">←</button>
+    <button class="back-btn" id="folderBack" aria-label="">←</button>
     <div class="desktop-icon" id="theFolder">
       <img src="Folder.png" alt="folder" draggable="false">
       <div class="icon-label">...</div>
@@ -613,45 +619,80 @@
  
     /* icon-grid coordinates, measured directly off the insidefolder.jpg pixels (1500x902)
        so the icons land on the real white free space of the window, like a real
-       Windows large-icons view would lay them out */
-    var ICON_START_X_PCT = 276 / 1500 * 100;
-    var ICON_START_Y_PCT = 162 / 902 * 100;
-    var CELL_W_PCT = 118 / 1500 * 100;
-    var CELL_H_PCT = 118 / 902 * 100;
-    var ICON_W_PCT = 88 / 1500 * 100;
-    var PANE_RIGHT_PCT = 1489 / 1500 * 100;
-    var COLS = Math.max(1, Math.floor((PANE_RIGHT_PCT - ICON_START_X_PCT) / CELL_W_PCT));
- 
+       Windows large-icons view would lay them out.
+       On phones the whole chrome image is squeezed down to ~90vw, which used to shrink
+       the icon/thumbnail/label along with it (down to ~20px) and made the label text
+       wrap one letter per line. getIconMetrics() detects narrow viewports and instead
+       sizes the icon as a fixed, readable pixel footprint against the window's actual
+       rendered width — desktop is untouched. */
+    var explorerWin = document.getElementById('explorerWin');
+
+    function isPhoneViewport(){
+      return window.innerWidth <= 700;
+    }
+
+    function getIconMetrics(){
+      var containerWidth = explorerWin.getBoundingClientRect().width || (window.innerWidth * 0.92);
+      var containerHeight = containerWidth * (902 / 1500);
+      var startXPct = 276 / 1500 * 100;
+      var startYPct = 162 / 902 * 100;
+      var paneRightPct = 1489 / 1500 * 100;
+
+      if(isPhoneViewport()){
+        var iconPx = 108;
+        var cellPx = 134;
+        return {
+          startXPct: startXPct,
+          startYPct: startYPct,
+          cellWPct: cellPx / containerWidth * 100,
+          cellHPct: cellPx / containerHeight * 100,
+          iconWPct: iconPx / containerWidth * 100,
+          paneRightPct: paneRightPct
+        };
+      }
+
+      return {
+        startXPct: startXPct,
+        startYPct: startYPct,
+        cellWPct: 118 / 1500 * 100,
+        cellHPct: 118 / 902 * 100,
+        iconWPct: 88 / 1500 * 100,
+        paneRightPct: paneRightPct
+      };
+    }
+
     function renderVideos(){
+      var m = getIconMetrics();
+      var cols = Math.max(1, Math.floor((m.paneRightPct - m.startXPct) / m.cellWPct));
       videoGrid.innerHTML = '';
       videos.forEach(function(v, i){
-        var col = i % COLS;
-        var row = Math.floor(i / COLS);
-        var left = ICON_START_X_PCT + col * CELL_W_PCT;
-        var top = ICON_START_Y_PCT + row * CELL_H_PCT;
- 
+        var col = i % cols;
+        var row = Math.floor(i / cols);
+        var left = m.startXPct + col * m.cellWPct;
+        var top = m.startYPct + row * m.cellHPct;
+
         var item = document.createElement('div');
         item.className = 'explorer-icon';
         item.style.left = left + '%';
         item.style.top = top + '%';
-        item.style.width = ICON_W_PCT + '%';
+        item.style.width = m.iconWPct + '%';
         item.setAttribute('data-index', i);
- 
+
         var thumbWrap = document.createElement('div');
         thumbWrap.className = 'thumb-wrap';
         var img = document.createElement('img');
         img.src = v.thumb;
         img.alt = v.name;
         thumbWrap.appendChild(img);
- 
+
         var label = document.createElement('div');
         label.className = 'vid-label';
         label.textContent = v.name;
- 
+
         item.appendChild(thumbWrap);
         item.appendChild(label);
         videoGrid.appendChild(item);
- 
+
         item.addEventListener('click', function(e){
           e.stopPropagation();
           document.querySelectorAll('.explorer-icon').forEach(function(el){
@@ -659,13 +700,19 @@
           });
           item.classList.add('selected');
         });
- 
+
         item.addEventListener('dblclick', function(e){
           e.stopPropagation();
           openPlayer(i);
         });
       });
     }
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function(){
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderVideos, 150);
+    });
  
     videoGrid.addEventListener('click', function(){
       document.querySelectorAll('.explorer-icon').forEach(function(el){
