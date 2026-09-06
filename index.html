@@ -12,13 +12,13 @@
     --black:#0a0a0a;
     --white:#ffffff;
   }
-
+ 
   *{
     box-sizing:border-box;
     margin:0;
     padding:0;
   }
-
+ 
   html,body{
     width:100%;
     height:100%;
@@ -26,12 +26,12 @@
     color:var(--black);
     overflow:hidden;
   }
-
+ 
   body{
     font-family:"IBM Plex Mono", monospace;
     -webkit-font-smoothing:antialiased;
   }
-
+ 
   /* entry fade */
   body{
     opacity:0;
@@ -40,7 +40,7 @@
   @keyframes enter{
     to{opacity:1;}
   }
-
+ 
   .page{
     position:fixed;
     inset:0;
@@ -59,7 +59,7 @@
     visibility:visible;
     pointer-events:auto;
   }
-
+ 
   /* ---- HOME ---- */
   .headline{
     text-align:center;
@@ -70,7 +70,7 @@
     font-size:clamp(2rem, 6.2vw, 5rem);
     max-width:16ch;
   }
-
+ 
   /* ---- shared rounded text buttons ---- */
   .btn{
     background:transparent;
@@ -87,11 +87,11 @@
   .btn:hover{
     background:rgba(10,10,10,0.06);
   }
-
+ 
   .contact-btn{
     margin-top:6vh;
   }
-
+ 
   /* ---- CONTACT ---- */
   .back-btn{
     position:absolute;
@@ -105,30 +105,31 @@
     color:#9a9a9a;
     padding:0.3em;
     font-family:"IBM Plex Mono", monospace;
+    z-index:5;
   }
-
+ 
   .contact-wrap{
     width:100%;
     max-width:420px;
   }
-
+ 
   .contact-title{
     font-weight:400;
     font-size:clamp(1.3rem, 3.4vw, 1.8rem);
     text-align:center;
     margin-bottom:6vh;
   }
-
+ 
   form{
     display:flex;
     flex-direction:column;
     gap:2.4em;
   }
-
+ 
   .field{
     position:relative;
   }
-
+ 
   .field input{
     width:100%;
     border:none;
@@ -140,18 +141,18 @@
     color:var(--black);
     outline:none;
   }
-
+ 
   .field input::placeholder{
     color:#9a9a9a;
     font-weight:400;
     font-size:0.85rem;
   }
-
+ 
   .send-btn{
     margin-top:2vh;
     align-self:center;
   }
-
+ 
   .confirm{
     text-align:center;
     font-weight:400;
@@ -163,7 +164,7 @@
   .confirm.show{
     opacity:1;
   }
-
+ 
   footer{
     position:fixed;
     bottom:4vh;
@@ -174,8 +175,28 @@
     font-weight:400;
     color:#9a9a9a;
     z-index:2;
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transition:opacity 0.45s ease, visibility 0.45s ease;
   }
-
+  footer.footer-hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+ 
+  .sub-link{
+    cursor:pointer;
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color 0.2s ease, color 0.2s ease;
+  }
+  .sub-link:hover{
+    color:#6a6a6a;
+    border-bottom-color:#9a9a9a;
+  }
+ 
   @media (max-width:480px){
     .headline{
       max-width:14ch;
@@ -184,15 +205,232 @@
       gap:2em;
     }
   }
+ 
+  /* ================= FOLDER (blank desktop) PAGE — real Windows 7 wallpaper ================= */
+  #folder{
+    background-image:url('wallpaper.jpg');
+    background-size:cover;
+    background-position:center;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+ 
+  .desktop-icon{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:10px 14px;
+    border-radius:4px;
+    cursor:default;
+    /* fixed one-time-chosen spot, off-center — same on every load/refresh,
+       not re-randomized (kept clear of the back button and bottom hint) */
+    position:absolute;
+    left:64%;
+    top:29%;
+    transform:translate(-50%,-50%);
+  }
+  .desktop-icon img{
+    width:72px;
+    height:72px;
+    -webkit-user-drag:none;
+    pointer-events:none;
+  }
+  .desktop-icon .icon-label{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.8rem;
+    color:var(--black);
+    padding:1px 6px;
+    border-radius:2px;
+  }
+  .desktop-icon.selected .icon-label{
+    background:#2563eb;
+    color:#fff;
+  }
+  .desktop-icon.selected img{
+    filter:brightness(0.85) saturate(1.3);
+  }
+ 
+  .folder-hint{
+    position:absolute;
+    bottom:6vh;
+    left:0;
+    width:100%;
+    text-align:center;
+    font-size:0.7rem;
+    color:#c2c2c2;
+  }
+ 
+  /* ================= EXPLORER WINDOW — uses the real insidefolder.jpg chrome image ================= */
+  #library{
+    background:#3a6ea5;
+    background:linear-gradient(160deg,#5b8dc9,#2e5f96 60%,#1f4a7a);
+  }
+ 
+  .explorer-win{
+    position:relative;
+    width:min(1500px, 92vw);
+    line-height:0;
+    box-shadow:0 18px 45px rgba(0,0,0,0.45);
+    -webkit-user-select:none;
+    user-select:none;
+  }
+ 
+  .explorer-chrome{
+    width:100%;
+    height:auto;
+    display:block;
+    pointer-events:none;
+    -webkit-user-drag:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+ 
+  .explorer-close-zone{
+    position:absolute;
+    left:95.87%;
+    top:0.89%;
+    width:3.93%;
+    height:3.55%;
+    cursor:pointer;
+  }
+  .explorer-back-zone{
+    position:absolute;
+    left:0.4%;
+    top:4.4%;
+    width:3.4%;
+    height:5.3%;
+    cursor:pointer;
+  }
+ 
+  /* video icons dropped onto the white free space, sized/positioned in JS via percentages */
+  .explorer-icon{
+    position:absolute;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.4%;
+    padding:4px 4px;
+    border-radius:3px;
+    cursor:default;
+    text-align:center;
+  }
+  .explorer-icon .thumb-wrap{
+    width:100%;
+    aspect-ratio:16/9;
+    border:2px solid #7a7a7a;
+    border-radius:2px;
+    overflow:hidden;
+    background:#000;
+    box-shadow:1px 1px 3px rgba(0,0,0,0.3);
+  }
+  .explorer-icon img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    pointer-events:none;
+  }
+  .explorer-icon .vid-label{
+    font-family:"Segoe UI",Tahoma,sans-serif;
+    font-size:0.68rem;
+    line-height:1.25;
+    color:#000;
+    padding:1px 5px;
+    border-radius:2px;
+    word-break:break-word;
+  }
+  .explorer-icon.selected .vid-label{
+    background:#2563eb;
+    color:#fff;
+  }
+  .explorer-icon.selected .thumb-wrap{
+    outline:1px dashed #2563eb;
+  }
+ 
+  /* ================= VIDEO PLAYER WINDOW (uses the real player.png chrome image) ================= */
+  #player-overlay{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 0.25s ease;
+  }
+  #player-overlay.active{
+    opacity:1;
+    visibility:visible;
+  }
+ 
+  .player-win{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(640px, 92vw);
+    pointer-events:auto;
+    filter:drop-shadow(0 18px 40px rgba(0,0,0,0.45));
+  }
+ 
+  .player-frame{
+    position:relative;
+    width:100%;
+    line-height:0;
+  }
+ 
+  .player-chrome{
+    width:100%;
+    height:auto;
+    display:block;
+    pointer-events:none;
+    -webkit-user-drag:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+ 
+  .player-video{
+    position:absolute;
+    left:2.8125%;
+    top:13.8776%;
+    width:93.594%;
+    height:70.6122%;
+    object-fit:cover;
+    background:#000;
+    display:block;
+  }
+ 
+  .player-drag-handle{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:13.8776%;
+    cursor:grab;
+    z-index:2;
+  }
+  .player-drag-handle:active{
+    cursor:grabbing;
+  }
+ 
+  .player-close-zone{
+    position:absolute;
+    left:90.3%;
+    top:3.06%;
+    width:5.4%;
+    height:6.2%;
+    cursor:pointer;
+    z-index:3;
+  }
 </style>
 </head>
 <body>
-
+ 
   <div id="home" class="page active">
     <h1 class="headline">NEĆETE PUMPATI!<br>SRBIJA POBEĐUJE 🇷🇸🇷🇸🇷🇸</h1>
     <button class="btn contact-btn" id="toContact">KONTAKTIRAJTE ME</button>
   </div>
-
+ 
   <div id="contact" class="page">
     <button class="back-btn" id="toHome" aria-label="Nazad">←</button>
     <div class="contact-wrap">
@@ -211,61 +449,310 @@
       </form>
     </div>
   </div>
-
-  <footer>Napravljen uz ❤️ iz Subotice</footer>
-
+ 
+  <!-- ================= blank desktop page with the folder icon ================= -->
+  <div id="folder" class="page">
+    <button class="back-btn" id="folderBack" aria-label="Nazad">←</button>
+    <div class="desktop-icon" id="theFolder">
+      <img src="Folder.png" alt="folder" draggable="false">
+      <div class="icon-label">...</div>
+    </div>
+    <div class="folder-hint">dupli klik da otvorite</div>
+  </div>
+ 
+  <!-- ================= video library — the real insidefolder.jpg screenshot, video icon dropped on the white space ================= -->
+  <div id="library" class="page">
+    <div class="explorer-win" id="explorerWin">
+      <img src="insidefolder.jpg" class="explorer-chrome" alt="" draggable="false">
+      <div class="explorer-close-zone" id="libraryClose" title="Zatvori"></div>
+      <div class="explorer-back-zone" id="libraryBack" title="Nazad"></div>
+      <div id="videoGrid"></div>
+    </div>
+  </div>
+ 
+  <!-- ================= video player "window" — uses the real player.png chrome, video sits in the black area, draggable ================= -->
+  <div id="player-overlay">
+    <div class="player-win" id="playerWin">
+      <div class="player-frame">
+        <img src="player.png" class="player-chrome" alt="" draggable="false">
+        <video id="playerVideo" class="player-video" controls></video>
+        <div class="player-drag-handle" id="playerTitlebar"></div>
+        <div class="player-close-zone" id="playerClose" title="Zatvori"></div>
+      </div>
+    </div>
+  </div>
+ 
+ 
+  <footer id="siteFooter">Napravljen uz ❤️ iz <span class="sub-link" id="subLink">Subotice</span></footer>
+ 
   <audio id="anthem" src="anthem.mp3" loop preload="auto"></audio>
-
+ 
   <script>
     var home = document.getElementById('home');
     var contact = document.getElementById('contact');
+    var folder = document.getElementById('folder');
+    var library = document.getElementById('library');
+    var footer = document.getElementById('siteFooter');
+ 
     var toContact = document.getElementById('toContact');
     var toHome = document.getElementById('toHome');
+    var subLink = document.getElementById('subLink');
+    var folderBack = document.getElementById('folderBack');
+    var theFolder = document.getElementById('theFolder');
+    var libraryClose = document.getElementById('libraryClose');
+ 
     var form = document.getElementById('contactForm');
     var confirmMsg = document.getElementById('confirmMsg');
     var anthem = document.getElementById('anthem');
-
+ 
+    /* anthem: autoplay on load, loop forever, keeps playing through every
+       page/section change — only openPlayer()/closePlayer() are allowed to
+       pause/resume it (while a video is open).
+       anthemAllowed goes false the moment "Subotice" is clicked, so the anthem
+       stays stopped through folder/library/player, and only flips back true
+       (resuming playback) once the user comes back to the homepage. */
+    var anthemAllowed = true;
+    function startAnthem(){
+      if(!anthemAllowed) return;
+      if(anthem.paused){
+        anthem.play().catch(function(){
+          /* autoplay blocked until a real user gesture happens */
+        });
+      }
+    }
+    function stopAnthem(){
+      anthemAllowed = false;
+      anthem.pause();
+    }
+    window.addEventListener('load', startAnthem);
+    ['click','touchstart','keydown'].forEach(function(evt){
+      document.addEventListener(evt, startAnthem);
+    });
+ 
     function switchPage(fromEl, toEl){
       fromEl.classList.remove('active');
+      if(toEl === home){
+        footer.classList.remove('footer-hidden');
+      } else {
+        footer.classList.add('footer-hidden');
+      }
       setTimeout(function(){
         toEl.classList.add('active');
       }, 700);
+      /* make sure navigating never interrupts the anthem */
+      startAnthem();
     }
-
+ 
     toContact.addEventListener('click', function(){
       switchPage(home, contact);
     });
-
+ 
     toHome.addEventListener('click', function(){
       switchPage(contact, home);
     });
-
+ 
+    /* footer "Subotice" -> removes everything (footer fades too), stops the
+       anthem, and opens blank desktop page */
+    subLink.addEventListener('click', function(e){
+      e.stopPropagation();
+      stopAnthem();
+      switchPage(home, folder);
+    });
+ 
+    folderBack.addEventListener('click', function(){
+      theFolder.classList.remove('selected');
+      anthemAllowed = true;
+      switchPage(folder, home);
+    });
+ 
     form.addEventListener('submit', function(e){
       e.preventDefault();
       var data = new FormData(form);
       var first = data.get('firstName');
       var last = data.get('lastName');
       var email = data.get('email');
-
+ 
       var subject = encodeURIComponent('Poruka od ' + first + ' ' + last);
       var body = encodeURIComponent('Ime: ' + first + ' ' + last + '\nEmail: ' + email);
       window.location.href = 'mailto:lebromoficial@gmail.com?subject=' + subject + '&body=' + body;
-
+ 
       confirmMsg.classList.add('show');
     });
-
-    /* anthem: autoplay on load, loop forever, no pause control anywhere */
-    function startAnthem(){
-      anthem.play().catch(function(){
-        /* autoplay blocked until a gesture happens */
+ 
+ 
+    /* ============== FOLDER ICON: single click select, double click open ============== */
+    theFolder.addEventListener('click', function(e){
+      e.stopPropagation();
+      theFolder.classList.add('selected');
+    });
+    folder.addEventListener('click', function(){
+      theFolder.classList.remove('selected');
+    });
+    theFolder.addEventListener('dblclick', function(e){
+      e.stopPropagation();
+      switchPage(folder, library);
+    });
+ 
+    libraryClose.addEventListener('click', function(){
+      switchPage(library, folder);
+    });
+    document.getElementById('libraryBack').addEventListener('click', function(){
+      switchPage(library, folder);
+    });
+ 
+    /* ============== VIDEO LIBRARY: add new videos here as you get more ============== */
+    var videos = [
+      {
+        file: 'qTBT4U-ojSM_3mim.mp4',
+        name: 'video1.mp4',
+        thumb: 'data:image/jpeg;base64,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'
+      }
+    ];
+    var currentVideoIndex = 0;
+ 
+    var videoGrid = document.getElementById('videoGrid');
+ 
+    /* icon-grid coordinates, measured directly off the insidefolder.jpg pixels (1500x902)
+       so the icons land on the real white free space of the window, like a real
+       Windows large-icons view would lay them out */
+    var ICON_START_X_PCT = 276 / 1500 * 100;
+    var ICON_START_Y_PCT = 162 / 902 * 100;
+    var CELL_W_PCT = 118 / 1500 * 100;
+    var CELL_H_PCT = 118 / 902 * 100;
+    var ICON_W_PCT = 88 / 1500 * 100;
+    var PANE_RIGHT_PCT = 1489 / 1500 * 100;
+    var COLS = Math.max(1, Math.floor((PANE_RIGHT_PCT - ICON_START_X_PCT) / CELL_W_PCT));
+ 
+    function renderVideos(){
+      videoGrid.innerHTML = '';
+      videos.forEach(function(v, i){
+        var col = i % COLS;
+        var row = Math.floor(i / COLS);
+        var left = ICON_START_X_PCT + col * CELL_W_PCT;
+        var top = ICON_START_Y_PCT + row * CELL_H_PCT;
+ 
+        var item = document.createElement('div');
+        item.className = 'explorer-icon';
+        item.style.left = left + '%';
+        item.style.top = top + '%';
+        item.style.width = ICON_W_PCT + '%';
+        item.setAttribute('data-index', i);
+ 
+        var thumbWrap = document.createElement('div');
+        thumbWrap.className = 'thumb-wrap';
+        var img = document.createElement('img');
+        img.src = v.thumb;
+        img.alt = v.name;
+        thumbWrap.appendChild(img);
+ 
+        var label = document.createElement('div');
+        label.className = 'vid-label';
+        label.textContent = v.name;
+ 
+        item.appendChild(thumbWrap);
+        item.appendChild(label);
+        videoGrid.appendChild(item);
+ 
+        item.addEventListener('click', function(e){
+          e.stopPropagation();
+          document.querySelectorAll('.explorer-icon').forEach(function(el){
+            el.classList.remove('selected');
+          });
+          item.classList.add('selected');
+        });
+ 
+        item.addEventListener('dblclick', function(e){
+          e.stopPropagation();
+          openPlayer(i);
+        });
       });
     }
-    window.addEventListener('load', startAnthem);
-    document.addEventListener('click', function once(){
-      startAnthem();
-      document.removeEventListener('click', once);
+ 
+    videoGrid.addEventListener('click', function(){
+      document.querySelectorAll('.explorer-icon').forEach(function(el){
+        el.classList.remove('selected');
+      });
     });
+ 
+    /* ============== PLAYER (uses player.png as the actual chrome image) ============== */
+    var playerOverlay = document.getElementById('player-overlay');
+    var playerWin = document.getElementById('playerWin');
+    var playerTitlebar = document.getElementById('playerTitlebar');
+    var playerVideo = document.getElementById('playerVideo');
+    var playerClose = document.getElementById('playerClose');
+ 
+    function openPlayer(index){
+      currentVideoIndex = index;
+      var v = videos[index];
+      playerVideo.src = v.file;
+      playerOverlay.classList.add('active');
+      anthem.pause();
+      playerVideo.play().catch(function(){});
+    }
+ 
+    function closePlayer(){
+      playerOverlay.classList.remove('active');
+      playerVideo.pause();
+      playerVideo.currentTime = 0;
+      playerVideo.removeAttribute('src');
+      playerVideo.load();
+      startAnthem();
+    }
+ 
+    playerClose.addEventListener('click', closePlayer);
+ 
+    /* ---- make the player window draggable by its titlebar/menu strip ---- */
+    (function makeDraggable(){
+      var dragging = false;
+      var offsetX = 0, offsetY = 0;
+ 
+      function startDrag(clientX, clientY){
+        var rect = playerWin.getBoundingClientRect();
+        playerWin.style.left = rect.left + 'px';
+        playerWin.style.top = rect.top + 'px';
+        playerWin.style.transform = 'none';
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+        dragging = true;
+      }
+      function moveDrag(clientX, clientY){
+        if(!dragging) return;
+        var x = clientX - offsetX;
+        var y = clientY - offsetY;
+        var maxX = window.innerWidth - playerWin.offsetWidth;
+        var maxY = window.innerHeight - playerWin.offsetHeight;
+        x = Math.max(0, Math.min(x, maxX));
+        y = Math.max(0, Math.min(y, maxY));
+        playerWin.style.left = x + 'px';
+        playerWin.style.top = y + 'px';
+      }
+      function endDrag(){
+        dragging = false;
+      }
+ 
+      playerTitlebar.addEventListener('mousedown', function(e){
+        startDrag(e.clientX, e.clientY);
+        e.preventDefault();
+      });
+      document.addEventListener('mousemove', function(e){
+        moveDrag(e.clientX, e.clientY);
+      });
+      document.addEventListener('mouseup', endDrag);
+ 
+      playerTitlebar.addEventListener('touchstart', function(e){
+        var t = e.touches[0];
+        startDrag(t.clientX, t.clientY);
+      }, {passive:true});
+      document.addEventListener('touchmove', function(e){
+        if(!dragging) return;
+        var t = e.touches[0];
+        moveDrag(t.clientX, t.clientY);
+      }, {passive:true});
+      document.addEventListener('touchend', endDrag);
+    })();
+ 
+    renderVideos();
   </script>
-
+ 
 </body>
 </html>
